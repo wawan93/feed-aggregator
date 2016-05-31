@@ -22,6 +22,9 @@ $config = [
                 ],
             ],
         ],
+        'feed' => [
+            'class' => 'yii\feed\FeedDriver',
+        ],
         'db' => $db,
     ],
     'params' => $params,

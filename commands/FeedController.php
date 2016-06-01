@@ -13,10 +13,25 @@ class FeedController extends Controller
         $feeds = Feed::find()->all();
 
         foreach ($feeds as $feed) {
-            $res = Yii::$app->feed->reader()->import($feed->url);
+            $last_feed_date = $last_modified =  new \DateTime($feed->last_modified);
+
+            /** @var \Zend\Feed\Reader\Reader $reader */
+            $reader = Yii::$app->feed->reader();
+            $res = $reader->import($feed->url, null, $last_modified);
+
             foreach ($res as $item) {
-                var_dump($item->getTitle());
+                $diff = $item->getDateModified()->diff($last_modified);
+                if ($diff->format('%R') == '-') {
+                    echo $item->getTitle() . PHP_EOL;
+
+                    $diff = $item->getDateModified()->diff($last_feed_date);
+                    if ($diff->format('%R') == '-') {
+                        $last_feed_date = $item->getDateModified();
+                    }
+                }
             }
+            $feed->last_modified = $last_feed_date->format('Y-m-d H:i:s');
+            $feed->save();
         }
     }
 }

@@ -11,6 +11,7 @@ class FeedController extends Controller
     public function actionIndex()
     {
         $feeds = Feed::find()->all();
+        $telegram = new TelegramController();
 
         foreach ($feeds as $feed) {
             $last_feed_date = $last_modified =  new \DateTime($feed->last_modified);
@@ -22,7 +23,9 @@ class FeedController extends Controller
             foreach ($res as $item) {
                 $diff = $item->getDateModified()->diff($last_modified);
                 if ($diff->format('%R') == '-') {
-                    echo $item->getTitle() . PHP_EOL;
+                    $telegram->sendMessage(
+                        $item->getTitle() . PHP_EOL . $item->getLink()
+                    );
 
                     $diff = $item->getDateModified()->diff($last_feed_date);
                     if ($diff->format('%R') == '-') {

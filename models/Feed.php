@@ -10,7 +10,7 @@ use Yii;
  * @property integer $id
  * @property string $url
  * @property string $type
- * @property string $last_item
+ * @property string $last_modified
  */
 class Feed extends \yii\db\ActiveRecord
 {
@@ -29,7 +29,8 @@ class Feed extends \yii\db\ActiveRecord
     {
         return [
             [['url', 'type'], 'required'],
-            [['url', 'type', 'last_item'], 'string', 'max' => 255],
+            [['url', 'type'], 'string', 'max' => 255],
+//            [['last_modified'], 'datetime']
         ];
     }
 
@@ -42,7 +43,22 @@ class Feed extends \yii\db\ActiveRecord
             'id' => 'ID',
             'url' => 'Url',
             'type' => 'Type',
-            'last_item' => 'Last Item',
+            'last_modified' => 'Last Modified',
         ];
+    }
+
+    /**
+     * @param bool $insert
+     * @return bool
+     */
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            if (!$this->last_modified) {
+                $this->last_modified = date('Y-m-d H:i:s', time() - 100000);
+            }
+            return true;
+        }
+        return false;
     }
 }

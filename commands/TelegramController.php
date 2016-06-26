@@ -2,7 +2,7 @@
 
 namespace app\commands;
 
-class TelegramController
+class TelegramController extends \yii\base\Controller
 {
     /**
      * @param $message
@@ -20,5 +20,10 @@ class TelegramController
         ]);
 
         return file_get_contents($link);
+    }
+    
+    public function actionIndex($message = 'test')
+    {
+        $this->sendMessage($message);
     }
 }

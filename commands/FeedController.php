@@ -11,7 +11,7 @@ class FeedController extends Controller
     public function actionIndex()
     {
         $feeds = Feed::find()->all();
-        $telegram = new TelegramController();
+        $telegram = new TelegramController('telegram', new \yii\base\Module('telegram'));
 
         foreach ($feeds as $feed) {
             $last_feed_date = $last_modified =  new \DateTime($feed->last_modified);

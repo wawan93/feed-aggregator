@@ -19,7 +19,14 @@ class TelegramController extends \yii\base\Controller
             'text' => $message
         ]);
 
-        return file_get_contents($link);
+	do {
+        	$result = json_decode(file_get_contents($link), true);
+		if (!isset($result) || $result['ok'] != true) {
+			sleep(60 * 2); $ok = false;
+		} else {
+			$ok = true;
+		}
+	} while ($ok != true);
     }
     
     public function actionIndex($message = 'test')
